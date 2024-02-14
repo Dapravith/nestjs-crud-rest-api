@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/main.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1707797343859,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707797489268,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n+import { ValidationPipe } from '@nestjs/common';\n import { NestFactory } from '@nestjs/core';\n import { AppModule } from './app.module';\n-import { ValidationPipe } from '@nestjs/common';\n \n async function bootstrap() {\n   const app = await NestFactory.create(AppModule);\n \n"
+                }
+            ],
+            "date": 1707797343859,
+            "name": "Commit-0",
+            "content": "import { NestFactory } from '@nestjs/core';\nimport { AppModule } from './app.module';\nimport { ValidationPipe } from '@nestjs/common';\n\nasync function bootstrap() {\n  const app = await NestFactory.create(AppModule);\n\n  app.useGlobalPipes(new ValidationPipe());\n  await app.listen(3000);\n}\nbootstrap();\n"
+        }
+    ]
+}

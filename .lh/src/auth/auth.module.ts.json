@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/auth/auth.module.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1707806801994,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707809551488,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n import { MongooseModule } from '@nestjs/mongoose';\n import { PassportModule } from '@nestjs/passport';\n import { AuthController } from './auth.controller';\n import { AuthService } from './auth.service';\n-import { JwtStrategy } from './jwt.strategy';\n+// import { JwtStrategy } from './jwt.strategy';\n import { UserSchema } from './schemas/user.schema';\n \n @Module({\n   imports: [\n@@ -24,8 +24,8 @@\n     }),\n     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),\n   ],\n   controllers: [AuthController],\n-  providers: [AuthService, JwtStrategy],\n-  exports: [JwtStrategy, PassportModule],\n+  providers: [AuthService],\n+  exports: [PassportModule],\n })\n export class AuthModule {}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1707809558997,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,5 +27,5 @@\n   controllers: [AuthController],\n   providers: [AuthService],\n   exports: [PassportModule],\n })\n-export class AuthModule {}\n\\ No newline at end of file\n+export class AuthModule {}\n"
+                },
+                {
+                    "date": 1707813196131,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n import { MongooseModule } from '@nestjs/mongoose';\n import { PassportModule } from '@nestjs/passport';\n import { AuthController } from './auth.controller';\n import { AuthService } from './auth.service';\n-// import { JwtStrategy } from './jwt.strategy';\n+import { JwtStrategy } from './jwt.strategy';\n import { UserSchema } from './schemas/user.schema';\n \n @Module({\n   imports: [\n@@ -24,8 +24,8 @@\n     }),\n     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),\n   ],\n   controllers: [AuthController],\n-  providers: [AuthService],\n-  exports: [PassportModule],\n+  providers: [AuthService, JwtStrategy],\n+  exports: [JwtStrategy, PassportModule],\n })\n export class AuthModule {}\n"
+                }
+            ],
+            "date": 1707806801994,
+            "name": "Commit-0",
+            "content": "import { Module } from '@nestjs/common';\nimport { ConfigService } from '@nestjs/config';\nimport { JwtModule } from '@nestjs/jwt';\nimport { MongooseModule } from '@nestjs/mongoose';\nimport { PassportModule } from '@nestjs/passport';\nimport { AuthController } from './auth.controller';\nimport { AuthService } from './auth.service';\nimport { JwtStrategy } from './jwt.strategy';\nimport { UserSchema } from './schemas/user.schema';\n\n@Module({\n  imports: [\n    PassportModule.register({ defaultStrategy: 'jwt' }),\n    JwtModule.registerAsync({\n      inject: [ConfigService],\n      useFactory: (config: ConfigService) => {\n        return {\n          secret: config.get<string>('JWT_SECRET'),\n          signOptions: {\n            expiresIn: config.get<string | number>('JWT_EXPIRES'),\n          },\n        };\n      },\n    }),\n    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),\n  ],\n  controllers: [AuthController],\n  providers: [AuthService, JwtStrategy],\n  exports: [JwtStrategy, PassportModule],\n})\nexport class AuthModule {}"
+        }
+    ]
+}

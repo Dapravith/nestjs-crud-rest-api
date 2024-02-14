@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/auth/auth.service.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1707809821982,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707810471313,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,17 +1,32 @@\n+/* eslint-disable @typescript-eslint/no-unused-vars */\n import { Injectable } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n import { Model } from 'mongoose';\n import { User } from './schemas/user.schema';\n \n+import * as bcrypt from 'bcryptjs';\n+\n @Injectable()\n export class AuthService {\n-    constructor(\n-        @InjectModel(User.name)\n-        private userModel: Model<User>\n-    ) {}\n+  constructor(\n+    @InjectModel(User.name)\n+    private userModel: Model<User>,\n+    private jwtService: JwtService\n+  ) {}\n \n+  async signUp(signUpDto): Promise<{ token: string }> {\n+    const { name, email, password } = signUpDto;\n \n-    async signUp(signUpDto) {\n-        const { name, email, password } = signUpDto\n-    }\n+    const hashedPassword = await bcrypt.hash(password, 10);\n+\n+    const user = await this.userModel.create({\n+      name,\n+      email,\n+      password: hashedPassword,\n+    });\n+  }\n+\n+  const token = this.jwtService.sign({ id: user._id })\n+\n+  return { token } \n }\n"
+                },
+                {
+                    "date": 1707811896951,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,21 +1,23 @@\n-/* eslint-disable @typescript-eslint/no-unused-vars */\n-import { Injectable } from '@nestjs/common';\n+import { Injectable, UnauthorizedException } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n import { Model } from 'mongoose';\n import { User } from './schemas/user.schema';\n \n+import { JwtService } from '@nestjs/jwt';\n import * as bcrypt from 'bcryptjs';\n+import { LoginDto } from './dto/login.dto';\n+import { SignUpDto } from './dto/signup.dto';\n \n @Injectable()\n export class AuthService {\n   constructor(\n     @InjectModel(User.name)\n     private userModel: Model<User>,\n-    private jwtService: JwtService\n+    private jwtService: JwtService,\n   ) {}\n \n-  async signUp(signUpDto): Promise<{ token: string }> {\n+  async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {\n     const { name, email, password } = signUpDto;\n \n     const hashedPassword = await bcrypt.hash(password, 10);\n \n@@ -23,10 +25,30 @@\n       name,\n       email,\n       password: hashedPassword,\n     });\n+\n+    const token = this.jwtService.sign({ id: user._id });\n+\n+    return { token };\n   }\n \n-  const token = this.jwtService.sign({ id: user._id })\n+  async login(loginDto: LoginDto): Promise<{ token: string }> {\n+    const { email, password } = loginDto;\n \n-  return { token } \n+    const user = await this.userModel.findOne({ email });\n+\n+    if (!user) {\n+      throw new UnauthorizedException('Invalid email or password');\n+    }\n+\n+    const isPasswordMatched = await bcrypt.compare(password, user.password);\n+\n+    if (!isPasswordMatched) {\n+      throw new UnauthorizedException('Invalid email or password');\n+    }\n+\n+    const token = this.jwtService.sign({ id: user._id });\n+\n+    return { token };\n+  }\n }\n"
+                },
+                {
+                    "date": 1707820668562,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,9 @@\n-import { Injectable, UnauthorizedException } from '@nestjs/common';\n+import {\n+  ConflictException,\n+  Injectable,\n+  UnauthorizedException,\n+} from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n import { Model } from 'mongoose';\n import { User } from './schemas/user.schema';\n \n@@ -20,17 +24,26 @@\n     const { name, email, password } = signUpDto;\n \n     const hashedPassword = await bcrypt.hash(password, 10);\n \n-    const user = await this.userModel.create({\n-      name,\n-      email,\n-      password: hashedPassword,\n-    });\n+    try {\n+      const user = await this.userModel.create({\n+        name,\n+        email,\n+        password: hashedPassword,\n+      });\n \n-    const token = this.jwtService.sign({ id: user._id });\n+      const token = this.jwtService.sign({ id: user._id });\n \n-    return { token };\n+      return { token };\n+    } catch (error) {\n+      // Check if the error code is for a duplicate key (email)\n+      if (error.code === 11000) {\n+        throw new ConflictException('Email already in use.');\n+      }\n+      // Re-throw the error if it's not a duplication error\n+      throw error;\n+    }\n   }\n \n   async login(loginDto: LoginDto): Promise<{ token: string }> {\n     const { email, password } = loginDto;\n"
+                },
+                {
+                    "date": 1707820702730,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,9 +37,9 @@\n       return { token };\n     } catch (error) {\n       // Check if the error code is for a duplicate key (email)\n       if (error.code === 11000) {\n-        throw new ConflictException('Email already in use.');\n+        throw new ConflictException('This email already registered.');\n       }\n       // Re-throw the error if it's not a duplication error\n       throw error;\n     }\n"
+                },
+                {
+                    "date": 1707880821105,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,12 +6,12 @@\n import { InjectModel } from '@nestjs/mongoose';\n import { Model } from 'mongoose';\n import { User } from './schemas/user.schema';\n \n+import * as bcrypt from 'bcryptjs';\n import { JwtService } from '@nestjs/jwt';\n-import * as bcrypt from 'bcryptjs';\n+import { SignUpDto } from './dto/signup.dto';\n import { LoginDto } from './dto/login.dto';\n-import { SignUpDto } from './dto/signup.dto';\n \n @Injectable()\n export class AuthService {\n   constructor(\n@@ -35,14 +35,11 @@\n       const token = this.jwtService.sign({ id: user._id });\n \n       return { token };\n     } catch (error) {\n-      // Check if the error code is for a duplicate key (email)\n-      if (error.code === 11000) {\n-        throw new ConflictException('This email already registered.');\n+      if (error?.code === 11000) {\n+        throw new ConflictException('Duplicate Email Entered');\n       }\n-      // Re-throw the error if it's not a duplication error\n-      throw error;\n     }\n   }\n \n   async login(loginDto: LoginDto): Promise<{ token: string }> {\n"
+                }
+            ],
+            "date": 1707809821982,
+            "name": "Commit-0",
+            "content": "import { Injectable } from '@nestjs/common';\nimport { InjectModel } from '@nestjs/mongoose';\nimport { Model } from 'mongoose';\nimport { User } from './schemas/user.schema';\n\n@Injectable()\nexport class AuthService {\n    constructor(\n        @InjectModel(User.name)\n        private userModel: Model<User>\n    ) {}\n\n\n    async signUp(signUpDto) {\n        const { name, email, password } = signUpDto\n    }\n}\n"
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/book/schemas/book.schema.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1707788858643,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707788925300,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,5 +25,5 @@\n   @Prop()\n   category: Category;\n }\n \n-export const BookSchema = SchemaFactory;\n+export const BookSchema = SchemaFactory.createForClass(Book);\n"
+                },
+                {
+                    "date": 1707816312987,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,9 @@\n import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\n+import mongoose from 'mongoose';\n \n+import { User } from '../../auth/schemas/user.schema';\n+\n export enum Category {\n   ADVENTURE = 'Advanture',\n   CLASSIC = 'Classic',\n   CRIME = 'Crime',\n@@ -23,7 +26,10 @@\n   price: number;\n \n   @Prop()\n   category: Category;\n+\n+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User'})\n+  user: User;\n }\n \n export const BookSchema = SchemaFactory.createForClass(Book);\n"
+                },
+                {
+                    "date": 1707816326784,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,6 @@\n import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\n import mongoose from 'mongoose';\n-\n import { User } from '../../auth/schemas/user.schema';\n \n export enum Category {\n   ADVENTURE = 'Advanture',\n"
+                },
+                {
+                    "date": 1707816554262,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,9 +26,9 @@\n \n   @Prop()\n   category: Category;\n \n-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User'})\n+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })\n   user: User;\n }\n \n export const BookSchema = SchemaFactory.createForClass(Book);\n"
+                }
+            ],
+            "date": 1707788858643,
+            "name": "Commit-0",
+            "content": "import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\n\nexport enum Category {\n  ADVENTURE = 'Advanture',\n  CLASSIC = 'Classic',\n  CRIME = 'Crime',\n  FANTASY = 'Fantasy',\n}\n@Schema({\n  timestamps: true,\n})\nexport class Book {\n  @Prop()\n  title: string;\n\n  @Prop()\n  description: string;\n\n  @Prop()\n  author: string;\n\n  @Prop()\n  price: number;\n\n  @Prop()\n  category: Category;\n}\n\nexport const BookSchema = SchemaFactory;\n"
+        }
+    ]
+}

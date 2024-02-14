@@ -1,0 +1,42 @@
+{
+    "sourceFile": "src/book/dto/update-book.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1707792657610,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707792684945,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { Category } from '../schemas/book.schema';\n \n export class UpdateBookDto {\n-    readonly title: string;\n-    readonly description: string;\n-    readonly author: string;\n-    readonly price: number;\n-    readonly category: Category;\n-}\n\\ No newline at end of file\n+  readonly title: string;\n+  readonly description: string;\n+  readonly author: string;\n+  readonly price: number;\n+  readonly category: Category;\n+}\n"
+                },
+                {
+                    "date": 1707798016825,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,22 @@\n+import { IsNumber, IsOptional, IsString } from 'class-validator';\n import { Category } from '../schemas/book.schema';\n \n export class UpdateBookDto {\n+  @IsOptional()\n+  @IsString()\n   readonly title: string;\n+\n+  @IsOptional()\n+  @IsString()\n   readonly description: string;\n+  @IsOptional()\n+  @IsString()\n   readonly author: string;\n+\n+  @IsOptional()\n+  @IsNumber()\n   readonly price: number;\n+  @IsOptional()\n+  @IsString()\n   readonly category: Category;\n }\n"
+                },
+                {
+                    "date": 1707798102285,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { IsNumber, IsOptional, IsString } from 'class-validator';\n+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';\n import { Category } from '../schemas/book.schema';\n \n export class UpdateBookDto {\n   @IsOptional()\n@@ -16,7 +16,7 @@\n   @IsOptional()\n   @IsNumber()\n   readonly price: number;\n   @IsOptional()\n-  @IsString()\n+  @IsEnum(Category, { message: 'Please enter correct category.' })\n   readonly category: Category;\n }\n"
+                },
+                {
+                    "date": 1707814021054,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,7 @@\n-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';\n+import { IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';\n import { Category } from '../schemas/book.schema';\n+import { User } from '../../auth/schemas/user.schema';\n \n export class UpdateBookDto {\n   @IsOptional()\n   @IsString()\n@@ -8,15 +9,20 @@\n \n   @IsOptional()\n   @IsString()\n   readonly description: string;\n+\n   @IsOptional()\n   @IsString()\n   readonly author: string;\n \n   @IsOptional()\n   @IsNumber()\n   readonly price: number;\n+\n   @IsOptional()\n   @IsEnum(Category, { message: 'Please enter correct category.' })\n   readonly category: Category;\n+\n+  @IsEmpty({ message: ' You cannot access user id! '})\n+  readonly user: User;\n }\n"
+                },
+                {
+                    "date": 1707814556011,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,11 @@\n-import { IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';\n+import {\n+  IsEmpty,\n+  IsEnum,\n+  IsNumber,\n+  IsOptional,\n+  IsString,\n+} from 'class-validator';\n import { User } from '../../auth/schemas/user.schema';\n import { Category } from '../schemas/book.schema';\n \n export class UpdateBookDto {\n@@ -22,7 +28,7 @@\n   @IsOptional()\n   @IsEnum(Category, { message: 'Please enter correct category.' })\n   readonly category: Category;\n \n-  @IsEmpty({ message: ' You cannot access user id! '})\n+  @IsEmpty({ message: ' You cannot access user id! ' })\n   readonly user: User;\n }\n"
+                },
+                {
+                    "date": 1707874370228,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n import {\n-    IsEmpty,\n-    IsEnum,\n-    IsNumber,\n-    IsOptional,\n-    IsString,\n+  IsEmpty,\n+  IsEnum,\n+  IsNumber,\n+  IsOptional,\n+  IsString,\n } from 'class-validator';\n import { User } from '../../auth/schemas/user.schema';\n import { Category } from '../schemas/book.schema';\n \n"
+                }
+            ],
+            "date": 1707792657610,
+            "name": "Commit-0",
+            "content": "import { Category } from '../schemas/book.schema';\n\nexport class UpdateBookDto {\n    readonly title: string;\n    readonly description: string;\n    readonly author: string;\n    readonly price: number;\n    readonly category: Category;\n}"
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/book/dto/create-book.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1707790665824,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707790692765,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n-import { Category } from \"../schemas/book.schema\";\n+import { Category } from '../schemas/book.schema';\n \n export class CreateBookDto {\n-    readonly title: string;\n-    readonly description: string;\n-    readonly author: string;\n-    readonly price: number;\n-    readonly category: Category;\n\\ No newline at end of file\n-}\n+  readonly title: string;\n+  readonly description: string;\n+  readonly author: string;\n+  readonly price: number;\n+  readonly category: Category;\n+}\n"
+                },
+                {
+                    "date": 1707797598677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,10 @@\n+import { IsNotEmpty, IsString } from 'class-validator';\n import { Category } from '../schemas/book.schema';\n \n export class CreateBookDto {\n+  @IsNotEmpty()\n+  @IsString()\n   readonly title: string;\n   readonly description: string;\n   readonly author: string;\n   readonly price: number;\n"
+                },
+                {
+                    "date": 1707797764419,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,20 @@\n-import { IsNotEmpty, IsString } from 'class-validator';\n+import { IsNotEmpty, IsString, IsNumber, IsEnum } from 'class-validator';\n import { Category } from '../schemas/book.schema';\n \n export class CreateBookDto {\n   @IsNotEmpty()\n   @IsString()\n   readonly title: string;\n+  @IsNotEmpty()\n+  @IsString()\n   readonly description: string;\n+  @IsNotEmpty()\n+  @IsString()\n   readonly author: string;\n+  @IsNotEmpty()\n+  @IsNumber()\n   readonly price: number;\n+  @IsNotEmpty()\n+  @IsEnum(Category, { message: 'Please enter correct category.' })\n   readonly category: Category;\n }\n"
+                },
+                {
+                    "date": 1707813875765,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,12 @@\n-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';\n+import {\n+  IsEnum,\n+  IsEmpty,\n+  IsNotEmpty,\n+  IsNumber,\n+  IsString,\n+} from 'class-validator';\n+import { User } from '../../auth/schemas/user.schema';\n import { Category } from '../schemas/book.schema';\n \n export class CreateBookDto {\n   @IsNotEmpty()\n@@ -16,5 +23,8 @@\n   readonly price: number;\n   @IsNotEmpty()\n   @IsEnum(Category, { message: 'Please enter correct category.' })\n   readonly category: Category;\n+\n+  @IsEmpty({ message: 'You cannot access user id! ' })\n+  readonly user: User;\n }\n"
+                },
+                {
+                    "date": 1707814469043,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n import {\n-    IsEmpty,\n-    IsEnum,\n-    IsNotEmpty,\n-    IsNumber,\n-    IsString,\n+  IsEmpty,\n+  IsEnum,\n+  IsNotEmpty,\n+  IsNumber,\n+  IsString,\n } from 'class-validator';\n import { User } from '../../auth/schemas/user.schema';\n import { Category } from '../schemas/book.schema';\n \n"
+                }
+            ],
+            "date": 1707790665824,
+            "name": "Commit-0",
+            "content": "import { Category } from \"../schemas/book.schema\";\n\nexport class CreateBookDto {\n    readonly title: string;\n    readonly description: string;\n    readonly author: string;\n    readonly price: number;\n    readonly category: Category;\n}"
+        }
+    ]
+}

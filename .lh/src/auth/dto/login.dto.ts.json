@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/auth/dto/login.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1707811476603,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707811487225,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,12 @@\n import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';\n \n export class LoginDto {\n-    @IsNotEmpty()\n-    @IsEmail({}, { message: 'Please enter correct email '})\n-    readonly email: string;\n+  @IsNotEmpty()\n+  @IsEmail({}, { message: 'Please enter correct email ' })\n+  readonly email: string;\n \n-    @IsNotEmpty()\n-    @IsString()\n\\ No newline at end of file\n-    @MinLength(6)\n-    readonly password: string;\n-}\n+  @IsNotEmpty()\n+  @IsString()\n+  @MinLength(6)\n+  readonly password: string;\n+}\n"
+                }
+            ],
+            "date": 1707811476603,
+            "name": "Commit-0",
+            "content": "import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';\n\nexport class LoginDto {\n    @IsNotEmpty()\n    @IsEmail({}, { message: 'Please enter correct email '})\n    readonly email: string;\n\n    @IsNotEmpty()\n    @IsString()\n    @MinLength(6)\n    readonly password: string;\n}"
+        }
+    ]
+}

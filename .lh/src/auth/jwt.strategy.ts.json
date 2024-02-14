@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/auth/jwt.strategy.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1707809293315,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707813071507,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,30 @@\n+import { Injectable, UnauthorizedException} from '@nestjs/common';\n+import { InjectModel } from '@nestjs/mongoose';\n+import { Model } from 'mongoose';\n+import { Strategy, ExtractJwt } from 'passport-jwt';\n+import { User } from './schemas/user.schema';\n+import { PassportStrategy } from '@nestjs/passport';\n+\n+@Injectable()\n+export class JwtStrategy extends PassportStrategy(Strategy) {\n+    constructor(\n+        @InjectModel(User.name)\n+        private userModel: Model<User>,\n+    ) {\n+        super({\n+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),\n+            secretOrKey: process.env.JWT_SECRET,\n+        });\n+    }\n+\n+    async validate(payload) {\n+        const { id } = payload;\n+\n+        const user = await this.userModel.findById(id);\n+\n+        if(!user) {\n+            throw new UnauthorizedException('Login first to access this endpoint.');\n+        }\n+        return user;\n+    }\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1707813127497,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n-import { Injectable, UnauthorizedException} from '@nestjs/common';\n+import { Injectable, UnauthorizedException } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n+import { PassportStrategy } from '@nestjs/passport';\n import { Model } from 'mongoose';\n-import { Strategy, ExtractJwt } from 'passport-jwt';\n+import { ExtractJwt, Strategy } from 'passport-jwt';\n import { User } from './schemas/user.schema';\n-import { PassportStrategy } from '@nestjs/passport';\n \n @Injectable()\n export class JwtStrategy extends PassportStrategy(Strategy) {\n     constructor(\n"
+                },
+                {
+                    "date": 1707813143003,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,25 +6,25 @@\n import { User } from './schemas/user.schema';\n \n @Injectable()\n export class JwtStrategy extends PassportStrategy(Strategy) {\n-    constructor(\n-        @InjectModel(User.name)\n-        private userModel: Model<User>,\n-    ) {\n-        super({\n-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),\n-            secretOrKey: process.env.JWT_SECRET,\n-        });\n-    }\n+  constructor(\n+    @InjectModel(User.name)\n+    private userModel: Model<User>,\n+  ) {\n+    super({\n+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),\n+      secretOrKey: process.env.JWT_SECRET,\n+    });\n+  }\n \n-    async validate(payload) {\n-        const { id } = payload;\n\\ No newline at end of file\n+  async validate(payload) {\n+    const { id } = payload;\n \n-        const user = await this.userModel.findById(id);\n+    const user = await this.userModel.findById(id);\n \n-        if(!user) {\n-            throw new UnauthorizedException('Login first to access this endpoint.');\n-        }\n-        return user;\n+    if (!user) {\n+      throw new UnauthorizedException('Login first to access this endpoint.');\n     }\n-}\n+    return user;\n+  }\n+}\n"
+                },
+                {
+                    "date": 1707873833239,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,8 +16,9 @@\n       secretOrKey: process.env.JWT_SECRET,\n     });\n   }\n \n+\n   async validate(payload) {\n     const { id } = payload;\n \n     const user = await this.userModel.findById(id);\n"
+                },
+                {
+                    "date": 1707873839394,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,8 @@\n       secretOrKey: process.env.JWT_SECRET,\n     });\n   }\n \n-\n   async validate(payload) {\n     const { id } = payload;\n \n     const user = await this.userModel.findById(id);\n"
+                }
+            ],
+            "date": 1707809293315,
+            "name": "Commit-0",
+            "content": ""
+        }
+    ]
+}

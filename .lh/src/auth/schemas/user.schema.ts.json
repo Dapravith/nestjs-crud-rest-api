@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/auth/schemas/user.schema.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1707799355189,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707799366361,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,19 +1,17 @@\n-import { Prop, Schema, SchemaFactory } from \"@nestjs/mongoose\";\n+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\n \n-\n-\n @Schema({\n-    timestamps: true\n+  timestamps: true,\n })\n-export  class User {\n-    @Prop()\n-    name: string;\n+export class User {\n+  @Prop()\n+  name: string;\n \n-    @Prop({ unique: [true, 'Duplicate email entered'] })\n-    email: string;\n+  @Prop({ unique: [true, 'Duplicate email entered'] })\n+  email: string;\n \n-    @Prop()\n-    password: string;\n+  @Prop()\n+  password: string;\n }\n \n export const UserSchema = SchemaFactory.createForClass(User);\n"
+                },
+                {
+                    "date": 1707813697497,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';\n+import { Document } from 'mongoose';\n \n @Schema({\n   timestamps: true,\n })\n-export class User {\n+export class User extends Document {\n   @Prop()\n   name: string;\n \n   @Prop({ unique: [true, 'Duplicate email entered'] })\n"
+                }
+            ],
+            "date": 1707799355189,
+            "name": "Commit-0",
+            "content": "import { Prop, Schema, SchemaFactory } from \"@nestjs/mongoose\";\n\n\n\n@Schema({\n    timestamps: true\n})\nexport  class User {\n    @Prop()\n    name: string;\n\n    @Prop({ unique: [true, 'Duplicate email entered'] })\n    email: string;\n\n    @Prop()\n    password: string;\n}\n\nexport const UserSchema = SchemaFactory.createForClass(User);\n"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "sourceFile": "src/book/book.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 7,
+            "patches": [
+                {
+                    "date": 1707789871068,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707789894084,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { Controller, Get } from '@nestjs/common';\n import { BookService } from './book.service';\n import { Book } from './schemas/book.schema';\n \n-@Controller('book')\n+@Controller('books')\n export class BookController {\n   constructor(private bookService: BookService) {}\n \n   @Get()\n"
+                },
+                {
+                    "date": 1707790232093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Controller, Get } from '@nestjs/common';\n+import { Body, Controller, Get, Post, } from '@nestjs/common';\n import { BookService } from './book.service';\n import { Book } from './schemas/book.schema';\n \n @Controller('books')\n@@ -9,5 +9,12 @@\n   @Get()\n   async getAllBooks(): Promise<Book[]> {\n     return this.bookService.findAll();\n   }\n+\n+  @Post()\n+  async createBook(\n+    @Body()\n+  ): Promise<Book> {\n+    return this.bookService.create(book);\n+  }\n }\n"
+                },
+                {
+                    "date": 1707790247230,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,7 @@\n   @Post()\n   async createBook(\n     @Body()\n   ): Promise<Book> {\n-    return this.bookService.create(book);\n+    return this.bookService.create(Book);\n   }\n }\n"
+                },
+                {
+                    "date": 1707790270531,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Body, Controller, Get, Post, } from '@nestjs/common';\n+import { Body, Controller, Get, Post } from '@nestjs/common';\n import { BookService } from './book.service';\n import { Book } from './schemas/book.schema';\n \n @Controller('books')\n@@ -13,8 +13,9 @@\n \n   @Post()\n   async createBook(\n     @Body()\n+    book,\n   ): Promise<Book> {\n-    return this.bookService.create(Book);\n+    return this.bookService.create(book);\n   }\n }\n"
+                },
+                {
+                    "date": 1707790772849,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,8 @@\n import { Body, Controller, Get, Post } from '@nestjs/common';\n import { BookService } from './book.service';\n import { Book } from './schemas/book.schema';\n+import { CreateBookDto } from './dto/create-book.dto';\n \n @Controller('books')\n export class BookController {\n   constructor(private bookService: BookService) {}\n@@ -13,9 +14,9 @@\n \n   @Post()\n   async createBook(\n     @Body()\n-    book,\n+    book: CreateBookDto,\n   ): Promise<Book> {\n     return this.bookService.create(book);\n   }\n }\n"
+                },
+                {
+                    "date": 1707790876331,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n import { Book } from './schemas/book.schema';\n \n @Controller('books')\n export class BookController {\n+  [x: string]: any;\n   constructor(private bookService: BookService) {}\n \n   @Get()\n   async getAllBooks(): Promise<Book[]> {\n@@ -18,5 +19,10 @@\n     book: CreateBookDto,\n   ): Promise<Book> {\n     return this.bookService.create(book);\n   }\n+\n+  async findById(id: string): Promise<Book> {\n+    const book = await this.bookModel.findById(id);\n+    return book;\n+  }\n }\n"
+                },
+                {
+                    "date": 1707791101053,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Body, Controller, Get, Post } from '@nestjs/common';\n+import { Body, Controller, Get, Param, Post } from '@nestjs/common';\n import { BookService } from './book.service';\n import { CreateBookDto } from './dto/create-book.dto';\n import { Book } from './schemas/book.schema';\n \n@@ -24,5 +24,13 @@\n   async findById(id: string): Promise<Book> {\n     const book = await this.bookModel.findById(id);\n     return book;\n   }\n+\n+  @Get(':id')\n+  async getBook(\n+    @Param('id')\n+    id: string,\n+  ): Promise<Book> {\n+    return this.bookService.findById(id);\n+  }\n }\n"
+                }
+            ],
+            "date": 1707789871068,
+            "name": "Commit-0",
+            "content": "import { Controller, Get } from '@nestjs/common';\nimport { BookService } from './book.service';\nimport { Book } from './schemas/book.schema';\n\n@Controller('book')\nexport class BookController {\n  constructor(private bookService: BookService) {}\n\n  @Get()\n  async getAllBooks(): Promise<Book[]> {\n    return this.bookService.findAll();\n  }\n}\n"
+        }
+    ]
+}

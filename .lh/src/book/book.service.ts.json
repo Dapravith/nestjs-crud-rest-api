@@ -1,0 +1,50 @@
+{
+    "sourceFile": "src/book/book.service.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 8,
+            "patches": [
+                {
+                    "date": 1707789123660,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1707789976558,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,5 +12,10 @@\n   async findAll(): Promise<Book[]> {\n     const books = await this.bookModel.find();\n     return books;\n   }\n+\n+  async create(book: Book): Promise<Book> {\n+    const res = await this.bookModel.create(book);\n+    return res;\n+  }\n }\n"
+                },
+                {
+                    "date": 1707791581360,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,10 @@\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n @Injectable()\n export class BookService {\n+  findById: any;\n+    deleteById: any;\n   constructor(\n     @InjectModel(Book.name)\n     private bookModel: mongoose.Model<Book>,\n   ) {}\n"
+                },
+                {
+                    "date": 1707791587664,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n import { Book } from './schemas/book.schema';\n @Injectable()\n export class BookService {\n   findById: any;\n-    deleteById: any;\n+  deleteById: any;\n   constructor(\n     @InjectModel(Book.name)\n     private bookModel: mongoose.Model<Book>,\n   ) {}\n"
+                },
+                {
+                    "date": 1707792505600,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,11 @@\n-import { Injectable } from '@nestjs/common';\n+import { Injectable, NotFoundException } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n+\n @Injectable()\n export class BookService {\n-  findById: any;\n-  deleteById: any;\n   constructor(\n     @InjectModel(Book.name)\n     private bookModel: mongoose.Model<Book>,\n   ) {}\n@@ -19,5 +18,26 @@\n   async create(book: Book): Promise<Book> {\n     const res = await this.bookModel.create(book);\n     return res;\n   }\n+\n+  async findById(id: string): Promise<Book> {\n+    const book = await this.bookModel.findById(id);\n+\n+    if (!book) {\n+      throw new NotFoundException('Book not found.');\n+    }\n+\n+    return book;\n+  }\n+\n+  async updateById(id: string, book: Book): Promise<Book> {\n+    return await this.bookModel.findByIdAndUpdate(id, book, {\n+      new: true,\n+      runValidators: true,\n+    });\n+  }\n+\n+  async deleteById(id: string): Promise<Book> {\n+    return await this.bookModel.findByIdAndDelete(id);\n+  }\n }\n"
+                },
+                {
+                    "date": 1707794874580,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,17 +2,35 @@\n import { InjectModel } from '@nestjs/mongoose';\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n \n+import { Query } from 'express-serve-static-core';\n+\n @Injectable()\n export class BookService {\n   constructor(\n     @InjectModel(Book.name)\n     private bookModel: mongoose.Model<Book>,\n   ) {}\n \n-  async findAll(): Promise<Book[]> {\n-    const books = await this.bookModel.find();\n+  async findAll(query: Query): Promise<Book[]> {\n+    const resPerPage = 2;\n+    const currentPage = Number(query.page) || 1;\n+    const skip = resPerPage * (currentPage - 1);\n+\n+    const keyword = query.keyword\n+      ? {\n+          title: {\n+            $regex: query.keyword,\n+            $options: 'i',\n+          },\n+        }\n+      : {};\n+\n+    const books = await this.bookModel\n+      .find({ ...keyword })\n+      .limit(resPerPage)\n+      .skip(skip);\n     return books;\n   }\n \n   async create(book: Book): Promise<Book> {\n"
+                },
+                {
+                    "date": 1707795432722,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n import { InjectModel } from '@nestjs/mongoose';\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n \n-import { Query } from 'express-serve-static-core';\n+import { Qeuery } from 'express-serve-static-core';\n \n @Injectable()\n export class BookService {\n   constructor(\n"
+                },
+                {
+                    "date": 1707795455330,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n+import { Query } from 'express-serve-static-core';\n \n-\n @Injectable()\n export class BookService {\n   constructor(\n     @InjectModel(Book.name)\n"
+                },
+                {
+                    "date": 1707796935189,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,18 +1,16 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\n import { InjectModel } from '@nestjs/mongoose';\n-import { Query } from 'express-serve-static-core';\n import * as mongoose from 'mongoose';\n import { Book } from './schemas/book.schema';\n \n @Injectable()\n export class BookService {\n   constructor(\n-    @InjectModel(Book.name)\n-    private bookModel: mongoose.Model<Book>,\n+    @InjectModel(Book.name) private bookModel: mongoose.Model<Book>,\n   ) {}\n \n-  async findAll(query: Query): Promise<Book[]> {\n+  async findAll(query: any): Promise<Book[]> { // Changed Query type to any\n     const resPerPage = 2;\n     const currentPage = Number(query.page) || 1;\n     const skip = resPerPage * (currentPage - 1);\n \n@@ -31,30 +29,36 @@\n       .skip(skip);\n     return books;\n   }\n \n-  async create(book: Book): Promise<Book> {\n-    const res = await this.bookModel.create(book);\n-    return res;\n+  async create(bookData: Book): Promise<Book> {\n+    const createdBook = new this.bookModel(bookData);\n+    return createdBook.save();\n   }\n \n   async findById(id: string): Promise<Book> {\n     const book = await this.bookModel.findById(id);\n-\n     if (!book) {\n       throw new NotFoundException('Book not found.');\n     }\n-\n     return book;\n   }\n \n-  async updateById(id: string, book: Book): Promise<Book> {\n-    return await this.bookModel.findByIdAndUpdate(id, book, {\n+  async updateById(id: string, bookData: any): Promise<Book> {\n+    const updatedBook = await this.bookModel.findByIdAndUpdate(id, bookData, {\n       new: true,\n       runValidators: true,\n     });\n+    if (!updatedBook) {\n+      throw new NotFoundException('Book not found.');\n+    }\n+    return updatedBook;\n   }\n \n   async deleteById(id: string): Promise<Book> {\n-    return await this.bookModel.findByIdAndDelete(id);\n+    const deletedBook = await this.bookModel.findByIdAndDelete(id);\n+    if (!deletedBook) {\n+      throw new NotFoundException('Book not found.');\n+    }\n+    return deletedBook;\n   }\n }\n"
+                }
+            ],
+            "date": 1707789123660,
+            "name": "Commit-0",
+            "content": "import { Injectable } from '@nestjs/common';\nimport { InjectModel } from '@nestjs/mongoose';\nimport * as mongoose from 'mongoose';\nimport { Book } from './schemas/book.schema';\n@Injectable()\nexport class BookService {\n  constructor(\n    @InjectModel(Book.name)\n    private bookModel: mongoose.Model<Book>,\n  ) {}\n\n  async findAll(): Promise<Book[]> {\n    const books = await this.bookModel.find();\n    return books;\n  }\n}\n"
+        }
+    ]
+}
